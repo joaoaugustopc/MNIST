@@ -39,12 +39,20 @@ def main():
     XtestT = Xtest/255.0
 
     numPixels = XtrainT.shape[1] * XtrainT.shape[2]
-    print("Número de pixels: ", numPixels)
+    XtrainT = XtrainT.reshape(XtrainT.shape[0], numPixels) # transforma a matriz em um vetor para se adequar às entradas do MLP
+    XtestT = XtestT.reshape(XtestT.shape[0], numPixels)
+
+    numClasses = len(ytrainT[0]) # 10 classes
+
+    model = tf.keras.models.Sequential()
+
+    model.add(tf.keras.layers.Dense(400, input_dim =numPixels, activation='relu'))
+    model.add(tf.keras.layers.Dense(250, activation='relu'))
+    model.add(tf.keras.layers.Dense(numClasses, activation='softmax'))
 
 
-
-    """
-    visualizaNumero(0, Xtrain, Ytrain)
+    #Visualização de números da base de dados MNIST
+    """visualizaNumero(0, Xtrain, Ytrain)
     visualizaNumero(5, Xtrain, Ytrain)
     plt.show()
     """
