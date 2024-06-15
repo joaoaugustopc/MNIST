@@ -6,8 +6,9 @@ import random
 mnist = tf.keras.datasets.mnist
 
 
+
 def visualizaNumero(classe, X, y):
-    qtImagens = 6
+    qtImagens = 8
     print ("Classe selecionada: ", classe)
     XSelecionados = X[y == classe]
     fig, axs = plt.subplots(1, qtImagens, figsize=(qtImagens, 1))
@@ -29,7 +30,7 @@ def main():
 
     contagem = np.bincount(Ytrain)
     print("Contagem de classes: ", contagem)
-    #Contagem de classes: [5923 6742 5958 6131 5842 5421 5918 6265 5851 5949]
+    #Contagem de classes:  [5923 6742 5958 6131 5842 5421 5918 6265 5851 5949]
 
     ytrainT = tf.keras.utils.to_categorical(Ytrain,10) # para cada valor de Ytrain, cria um vetor de 10 posições, com 1 na posição do valor e 0 nas outras
     ytestT = tf.keras.utils.to_categorical(Ytest,10) # para ter multiplas saidas no MLP com valores polarizados. Ou 0 ou 1 (10 classes)
