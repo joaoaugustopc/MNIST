@@ -14,7 +14,7 @@ def main():
     x_valid, x_train = Xtrain[:5000] / 255.0, Xtrain[5000:] / 255.0
     y_valid, y_train = Ytrain[:5000], Ytrain[5000:]
     
-    model = keras.models.Sequential()
+    model = keras.models.Sequential(name="mnist_sequential")
     #convertendo imagem para entrada de matriz 1D
     model.add(keras.layers.Flatten(input_shape=[28, 28]))
     model.add(keras.layers.Dense(300, activation="relu"))
