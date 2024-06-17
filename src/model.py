@@ -42,11 +42,46 @@ def main():
 
     numClasses = len(ytrainT[0]) # 10 classes
 
+    """
     model = tf.keras.models.Sequential()
 
     model.add(tf.keras.layers.Dense(400, input_dim =numPixels, activation='relu'))
     model.add(tf.keras.layers.Dense(250, activation='relu'))
     model.add(tf.keras.layers.Dense(numClasses, activation='softmax'))
+    model.compile(tf.keras.optimizers.Adam(learning_rate = 0.01), loss='categorical_crossentropy', metrics=['accuracy'])
+    print(model.summary())
+
+    history = model.fit(XtrainT, ytrainT, epochs=10, batch_size=200, validation_split = 0.15, verbose=1,shuffle=True)
+    
+
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.legend(['loss', 'val_loss'])
+    plt.title('Loss')
+    plt.xlabel('epoch')
+    plt.savefig('loss.png')
+    """
+    
+    model = tf.keras.models.load_model('modelo.keras')
+
+    score = model.evaluate(XtestT, ytestT, verbose=0)
+    print('Test loss:', score[0])
+    print('Test accuracy:', score[1])
+
+    posAleatoria = random.randint(0, len(XtestT) - 1)
+    print("Posicao aleatoria: ", posAleatoria)
+    imagem = Xtest[posAleatoria,:,:]
+
+    plt.imshow(imagem.reshape(28,28), cmap = plt.get_cmap('gray'))
+
+    plt.show()
+
+    imagem = imagem/255.0
+    imagem = imagem.reshape(1, numPixels)
+
+    predicao = model.predict(imagem)
+    predicao = np.argmax(predicao)
+    print("Predicao: ", predicao)
 
 
     #Visualização de números da base de dados MNIST
