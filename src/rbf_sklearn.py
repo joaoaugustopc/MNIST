@@ -15,34 +15,34 @@ import numpy as np
 
 """
 def visualiza_numero(classe, x, y):
-    qtd_img = 8 #quantidade de imagens a serem visualizadas
-    print(f'Classe: {classe}') #numero passado para encontrar  a imagem
-    x_selecionados = x[y == classe] #selecionando as imagens da classe
-    fig, axs = plt.subplots(nrows=1, ncols=qtd_img, figsize=(qtd_img, 1)) #criando a figura
+    qtd_img = 8  # quantidade de imagens a serem visualizadas
+    print(f'Classe: {classe}')  # numero passado para encontrar a imagem
+    x_selecionados = x[y == classe]  # selecionando as imagens da classe
+    fig, axs = plt.subplots(nrows=1, ncols=qtd_img, figsize=(qtd_img, 1))  # criando a figura
     for col in range(qtd_img):
-        rand_pos = random.randint(0, len(x_selecionados) - 1) #selecionando uma imagem aleatória
-        axs[col].imshow(x_selecionados[rand_pos, :, :], cmap= plt.get_cmap("gray")) #plotando a imagem
-        axs[col].axis('off') #removendo os eixos
+        rand_pos = random.randint(0, len(x_selecionados) - 1)  # selecionando uma imagem aleatória
+        img_to_plot = x_selecionados[rand_pos, :].reshape(28, 28)  # Reshape the image to 2D
+        axs[col].imshow(img_to_plot, cmap=plt.get_cmap("gray"))  # plotando a imagem
+        axs[col].axis('off')  # removendo os eixos
     plt.show()
-        
         
 """ 
     Função para prever o número com modelo treinado
 """
 def previsao_num(model, x_test):
-    random_pos = random.randint(0, len(x_test) - 1) #selecionando uma imagem aleatória
-    img_to_pred = x_test[random_pos, :, :] #selecionando a imagem
-    plt.imshow(img_to_pred, cmap=plt.get_cmap('gray')) #plotando a imagem
+    random_pos = random.randint(0, len(x_test) - 1)  # selecionando uma imagem aleatória
+    img_to_pred = x_test[random_pos, :]  # selecionando a imagem
+    img_to_pred_reshaped = img_to_pred.reshape(28, 28)  # reshape the image to 2D
+    plt.imshow(img_to_pred_reshaped, cmap=plt.get_cmap('gray'))
     plt.show()
-    
-    img_to_pred = img_to_pred/255.0 #normalizando a imagem
-    img_to_pred = img_to_pred.reshape(1, 28*28) #redimensionando a imagem
-    
-    #predição
-    prediction = model.predict_prob(img_to_pred)
+
+    img_to_pred = img_to_pred / 255.0  # normalizando a imagem
+    img_to_pred = img_to_pred.reshape(1, 28 * 28)  # reshape
+
+    # prediction
+    prediction = model.predict_proba(img_to_pred)
     print(prediction)
-    print ("Previsao:", np.argmin(prediction)) #imprimindo a previsão
-  
+    print("Prediction:", np.argmax(prediction))  # printando a previsão
 
 def main():
     #carregando dados
@@ -54,16 +54,21 @@ def main():
     Xtest_t = Xtest/255.0
     
     #redimensionando a imagem
+
     num_pixels = 28*28
     Xtrain_t = Xtrain_t.reshape(Xtrain.shape[0], num_pixels)
     Xtest_t = Xtest_t.reshape(Xtest.shape[0], num_pixels)
     
-    print(Ytrain.shape)
-    
+    # diminuindo o tamanho do dataset
+    subset_size = 3000
+    Xtrain_subset = Xtrain_t[:subset_size]
+    Ytrain_subset = Ytrain[:subset_size]
+        
+        
     kernel = 1.0 * RBF(1.0)
-    gpc = GaussianProcessClassifier(kernel=kernel, random_state=0).fit(Xtrain_t, Ytrain)
+    gpc = GaussianProcessClassifier(kernel=kernel, random_state=0).fit(Xtrain_subset, Ytrain_subset)
     
-    visualiza_numero(3, Xtrain_t, Ytrain)
+    visualiza_numero(3, Xtrain_subset, Ytrain_subset)
     previsao_num(gpc, Xtest_t)
     
 if __name__ == "__main__":
